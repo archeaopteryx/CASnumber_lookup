@@ -1,11 +1,14 @@
 package xlsxReadin.xlsxReader;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.GroupLayout;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,9 +50,13 @@ public class InputGUI {
 	
 	private void initUI() {
 		JTextField skipField = new JTextField("1", 10);
+		skipField.setInputVerifier(new intVerifier());
 		JTextField sheetField = new JTextField("1", 10);
+		sheetField.setInputVerifier(new intVerifier());
 		JTextField casField = new JTextField("B", 10);
+		casField.setInputVerifier(new alphaVerifier());
 		JTextField outField = new JTextField("C", 10);
+		outField.setInputVerifier(new alphaVerifier());
 		fileField = new JTextField("", 10);
 		
 		JLabel skipLabel = new JLabel("Number of rows to skip:");
@@ -57,13 +64,6 @@ public class InputGUI {
 		JLabel casLabel = new JLabel("CAS column:");
 		JLabel outLabel = new JLabel("Output column");
 		JLabel fileLabel = new JLabel("File");
-		
-		JButton quitBtn = new JButton("Cancel");
-		quitBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				System.exit(0);
-			}
-		}); 
 		
 		
 		JButton fileBtn = new JButton("File");
@@ -82,6 +82,7 @@ public class InputGUI {
 
 			}
 		});
+
 		
 		
 		JPanel panel = new JPanel();
@@ -95,6 +96,7 @@ public class InputGUI {
 						.addComponent(skipLabel)
 						.addComponent(casLabel)
 						.addComponent(fileLabel))
+						//.addComponent(submitBtn))
 				.addGroup(layout.createParallelGroup()
 						.addComponent(skipField)
 						.addComponent(casField)
@@ -106,6 +108,7 @@ public class InputGUI {
 				.addGroup(layout.createParallelGroup()
 						.addComponent(sheetField)
 						.addComponent(outField))
+						//.addComponent(quitBtn))
 				);
 		
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -123,10 +126,13 @@ public class InputGUI {
 						.addComponent(fileLabel)
 						.addComponent(fileField)
 						.addComponent(fileBtn))
+			//	.addGroup(layout.createParallelGroup()
+					//	.addComponent(submitBtn)
+					//	.addComponent(quitBtn))
 				);
 		
 		
-		int result = JOptionPane.showConfirmDialog(null, panel, "text", JOptionPane.OK_OPTION );
+		int result = JOptionPane.showConfirmDialog(null, panel, "text", JOptionPane.OK_CANCEL_OPTION );
 		if(result == JOptionPane.OK_OPTION && this.activeFile != null) {
 			this.skip = Integer.parseInt(skipField.getText());
 			this.sheet = Integer.parseInt(sheetField.getText());
@@ -139,8 +145,39 @@ public class InputGUI {
 		else if (result == JOptionPane.NO_OPTION) {
 			System.exit(0);
 		}
-		
 	}
+}
 
 
+class intVerifier extends InputVerifier {
+
+	@Override
+	public boolean verify(JComponent input){
+		JTextField field = (JTextField) input;
+		try {
+			Integer.parseInt(field.getText());
+			input.setBackground(Color.WHITE);
+			return true;
+		}catch(NumberFormatException e) {
+			input.setBackground(Color.RED);
+			return false;
+		}
+	}
+}
+
+class alphaVerifier extends InputVerifier {
+	@Override
+	public boolean verify (JComponent input) {
+		JTextField field = (JTextField) input;
+		String value = field.getText();
+		for (int i = 0; i<value.length(); i++) {
+			char ch = value.charAt(i);
+			if (!Character.isLetter(ch)) {
+				input.setBackground(Color.RED);
+				return false;
+			}
+		}
+		input.setBackground(Color.WHITE);
+		return true;
+	}
 }
