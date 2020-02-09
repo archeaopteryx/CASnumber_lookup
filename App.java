@@ -72,17 +72,17 @@ public class App
 		}catch(IllegalArgumentException e) {
 			JOptionPane.showMessageDialog(null, "Sheet does not exist! Exiting...");
 			System.exit(0);
+		}finally{
+			wb.close();
+			fis.close();
 		}
-
-		wb.close();
-		fis.close();
 		return casNums;
 	}
 	
 	private ArrayList<String> lookup (ArrayList<String> casNums) throws IOException {
 		ArrayList<String> chemNames = new ArrayList<String>();
-		//String dbFile = "../introduction/database.xlsx";
-		String dbFile = "database.xlsx";
+		//String dbFile = "database.xlsx";
+		String dbFile = Settings.getDBLocation();
 		FileInputStream fis = new FileInputStream(dbFile);
 		XSSFWorkbook wb = new XSSFWorkbook(fis);
 		XSSFSheet sheet = wb.getSheetAt(0);
