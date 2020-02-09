@@ -83,7 +83,20 @@ public class InputGUI {
 			}
 		});
 
-		
+		JButton updateDB_btn = new JButton("Update database location");
+		updateDB_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				File dir = new File(System.getProperty("user.dir"));
+				JFileChooser chooser = new JFileChooser(dir);
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel spreadsheets", "xlsx");
+				chooser.setFileFilter(filter);
+				int result = chooser.showOpenDialog(null);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					String newPath = chooser.getSelectedFile().getAbsolutePath();
+					Settings.update(newPath);
+				}
+			}
+		});
 		
 		JPanel panel = new JPanel();
 		GroupLayout layout = new GroupLayout(panel);
@@ -96,11 +109,11 @@ public class InputGUI {
 						.addComponent(skipLabel)
 						.addComponent(casLabel)
 						.addComponent(fileLabel))
-						//.addComponent(submitBtn))
 				.addGroup(layout.createParallelGroup()
 						.addComponent(skipField)
 						.addComponent(casField)
-						.addComponent(fileField))
+						.addComponent(fileField)
+					 	.addComponent(updateDB_btn))
 				.addGroup(layout.createParallelGroup()
 						.addComponent(sheetLabel)
 						.addComponent(outLabel)
@@ -108,7 +121,6 @@ public class InputGUI {
 				.addGroup(layout.createParallelGroup()
 						.addComponent(sheetField)
 						.addComponent(outField))
-						//.addComponent(quitBtn))
 				);
 		
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -126,9 +138,8 @@ public class InputGUI {
 						.addComponent(fileLabel)
 						.addComponent(fileField)
 						.addComponent(fileBtn))
-			//	.addGroup(layout.createParallelGroup()
-					//	.addComponent(submitBtn)
-					//	.addComponent(quitBtn))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(updateDB_btn))
 				);
 		
 		
